@@ -1,0 +1,22 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.letters {
+  button {
+    margin: 5px;
+    font-weight: bold;
+    font-size: 20px;
+    &.active {
+      background-color: rgb(69, 95, 69);
+      color: white;
+    }
+    &.inactive {
+      background-color: rgb(61, 37, 42);
+      color: rgb(83, 83, 83);
+    }
+  }
+}
