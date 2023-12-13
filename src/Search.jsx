@@ -595,7 +595,7 @@ const Search = () => {
       </div>
       {possibleWords.length > 0 ? (
         <div className="search-word">
-          <string>TRY:</string> <p>{possibleWords[randomNumber].word}</p>
+          <p>{possibleWords[randomNumber].word}</p>
           <Button
             onClick={() =>
               setRandomNumber(Math.floor(Math.random() * possibleWords.length))

@@ -26,7 +26,6 @@ const Letters = () => {
     <div className="letters">
       <div>
         <Button
-          variant="contained"
           className={`letter ${
             activeLetters.find((item) => item.letter === "q").active
               ? "active"
@@ -300,6 +299,7 @@ const Letters = () => {
         variant="outlined"
         color="warning"
         size="small"
+        className="invert"
       >
         invert selection
       </Button>
