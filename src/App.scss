@@ -1,15 +1,125 @@
 #root {
   max-width: 1280px;
+  height: 100vh;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
-.letters {
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  .letters {
+    button {
+      margin: 5px;
+      font-weight: bold;
+      font-size: 20px;
+      &.active {
+        background-color: rgb(69, 95, 69);
+        color: white;
+      }
+      &.inactive {
+        background-color: rgb(61, 37, 42);
+        color: rgb(83, 83, 83);
+      }
+    }
+  }
+
+  .search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    &-text {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      &__block {
+        display: flex;
+        flex-direction: column;
+        place-items: center;
+        gap: 5px;
+        input {
+          width: 25px;
+          height: 25px;
+          background-color: #484848;
+          border-radius: 10px;
+          font-size: 20px;
+          text-transform: uppercase;
+          text-align: center;
+          color: white;
+          font-weight: bold;
+          border: none;
+        }
+        button {
+          padding: 0;
+          font-weight: bold;
+          font-size: 10px;
+          width: 50px;
+          height: 20px;
+          border-radius: 5px;
+
+          background-color: #38445f;
+          &:hover {
+            background-color: #233a71;
+          }
+        }
+      }
+    }
+    &-button {
+      button {
+        margin: 5px;
+        font-weight: bold;
+        font-size: 20px;
+        background-color: #3d599b;
+        &:hover {
+          background-color: #233a71;
+        }
+      }
+    }
+    &-word {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 40px;
+      string {
+        font-size: 30px;
+      }
+      button {
+        color: white;
+        border-color: white;
+        &:hover {
+          border-color: white;
+        }
+      }
+    }
+  }
+}
+.fly-letters {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: rgba(41, 41, 41, 0.35);
   button {
-    margin: 5px;
-    font-weight: bold;
-    font-size: 20px;
+    margin: 1px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+
     &.active {
       background-color: rgb(69, 95, 69);
       color: white;

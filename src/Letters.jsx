@@ -3,12 +3,22 @@ import { AppContext } from "./contexts/AppContext";
 import { Button } from "@mui/material";
 
 const Letters = () => {
-  const { activeLetters, setActiveLetters } = useContext(AppContext);
+  const { activeLetters, setActiveLetters, word } = useContext(AppContext);
 
   const handleClick = (letter) => {
     const newActiveLetters = [...activeLetters];
     const foundObject = newActiveLetters.find((item) => item.letter === letter);
-    foundObject.active = !foundObject.active;
+    if (
+      !(
+        letter === word[0] ||
+        letter === word[1] ||
+        letter === word[2] ||
+        letter === word[3] ||
+        letter === word[4]
+      )
+    ) {
+      foundObject.active = !foundObject.active;
+    }
     setActiveLetters(newActiveLetters);
   };
 
@@ -281,6 +291,18 @@ const Letters = () => {
           m
         </Button>
       </div>
+      <Button
+        onClick={() => {
+          const newActiveLetters = [...activeLetters];
+          newActiveLetters.map((item) => (item.active = !item.active));
+          setActiveLetters(newActiveLetters);
+        }}
+        variant="outlined"
+        color="warning"
+        size="small"
+      >
+        invert selection
+      </Button>
     </div>
   );
 };
