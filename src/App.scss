@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
 
 #root {
+  position: relative;
   max-width: 1280px;
   height: 100vh;
   margin: 0 auto;
@@ -11,6 +12,13 @@
   @media screen and (max-width: 490px) {
     padding: 1rem 5px 5px 5px;
   }
+}
+
+.info {
+  position: absolute;
+  top: 15%;
+  right: 10%;
+  cursor: help;
 }
 
 header {
