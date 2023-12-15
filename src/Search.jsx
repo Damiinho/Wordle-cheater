@@ -12,6 +12,7 @@ const Search = () => {
     setParticularActiveLetters,
   } = useContext(AppContext);
   const [finalWords, setFinalWords] = useState([]);
+  const [randomWord, setRandomWord] = useState([]);
   const [randomNumber, setRandomNumber] = useState(0);
   const [possibleWords, setPossibleWords] = useState([]);
   const textFieldsRef = useRef([]);
@@ -35,34 +36,55 @@ const Search = () => {
     fetchData();
   }, [word, url]);
 
+  const fetchRandomWord = async () => {
+    try {
+      const response = await fetch(
+        "https://random-word-api.herokuapp.com/word?length=5"
+      );
+      const result = await response.json();
+      setRandomWord(result);
+      return result;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRandomWord();
+  }, []);
+
   const checkLettersInWords = () => {
     let wordsArray = [];
 
-    finalWords.forEach((object) => {
-      let allLettersIsCorrect = true;
+    if (activeLetters.every((item) => item.active === true)) {
+      wordsArray = [{ word: randomWord }];
+      fetchRandomWord();
+    } else {
+      finalWords.forEach((object) => {
+        let allLettersIsCorrect = true;
 
-      for (let i = 0; i < object.word.length; i++) {
-        let availableLetters = particularActiveLetters[i]
-          .filter((obj) => obj.active)
-          .map((obj) => obj.letter)
-          .filter((letter) =>
-            activeLetters.some((obj) => obj.active && obj.letter === letter)
-          );
+        for (let i = 0; i < object.word.length; i++) {
+          let availableLetters = particularActiveLetters[i]
+            .filter((obj) => obj.active)
+            .map((obj) => obj.letter)
+            .filter((letter) =>
+              activeLetters.some((obj) => obj.active && obj.letter === letter)
+            );
 
-        if (word[i] === "") {
-          if (!availableLetters.includes(object.word[i])) {
-            allLettersIsCorrect = false;
-            break;
+          if (word[i] === "") {
+            if (!availableLetters.includes(object.word[i])) {
+              allLettersIsCorrect = false;
+              break;
+            }
           }
         }
-      }
 
-      if (allLettersIsCorrect) {
-        wordsArray.push(object);
-      }
-    });
+        if (allLettersIsCorrect) {
+          wordsArray.push(object);
+        }
+      });
+    }
 
-    console.log(wordsArray);
     setPossibleWords(wordsArray);
   };
 
@@ -124,25 +146,22 @@ const Search = () => {
   };
   const id = open ? "simple-popover" : undefined;
   const handleClick = (letter, index) => {
-    console.log(index);
     const newParticularActiveLetters = [...particularActiveLetters];
     const clickedLetter = newParticularActiveLetters[index].find(
       (item) => item.letter === letter
     );
 
     if (activeLetters.find((item) => item.letter === letter).active === false) {
-      console.log("jestem tu");
       return null;
     } else {
       clickedLetter.active = !clickedLetter.active;
-      console.log("jestem tutaj");
     }
     setParticularActiveLetters(newParticularActiveLetters);
   };
 
   return (
     <div className="search">
-      <p></p>
+      <div className="search-title">Enter known letters</div>
       <div className="search-text">
         {word.map((letter, index) => {
           return (
@@ -156,7 +175,7 @@ const Search = () => {
                 onKeyDown={(e) => handleTextFieldKeyDown(index, e)}
               />
               <button onClick={(e) => handleClickPopover(e, index)}>
-                more
+                specific exclude
               </button>
               <Popover
                 id={id}
@@ -597,9 +616,15 @@ const Search = () => {
         <div className="search-word">
           <p>{possibleWords[randomNumber].word}</p>
           <Button
-            onClick={() =>
-              setRandomNumber(Math.floor(Math.random() * possibleWords.length))
-            }
+            onClick={() => {
+              if (activeLetters.every((item) => item.active === true)) {
+                checkLettersInWords();
+              } else {
+                setRandomNumber(
+                  Math.floor(Math.random() * possibleWords.length)
+                );
+              }
+            }}
             variant="outlined"
             size="medium"
           >

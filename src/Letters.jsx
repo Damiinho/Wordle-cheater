@@ -24,6 +24,7 @@ const Letters = () => {
 
   return (
     <div className="letters">
+      <div className="letters-title">Select letters to exclude</div>
       <div>
         <Button
           className={`letter ${
