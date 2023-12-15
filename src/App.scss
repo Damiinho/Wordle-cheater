@@ -8,19 +8,51 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 490px) {
     padding: 1rem 5px 5px 5px;
   }
 }
 
+header {
+  position: relative;
+  animation: headerAnimation 1s ease-in forwards;
+
+  @keyframes headerAnimation {
+    0% {
+      top: 40%;
+    }
+    70% {
+      top: 40%;
+    }
+    100% {
+      top: 0;
+    }
+  }
+}
 main {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-
+  animation: mainAnimation 1s ease-in forwards;
+  @keyframes mainAnimation {
+    0% {
+      opacity: 0;
+    }
+    90% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
   .letters {
+    &-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
     button {
       margin: 5px;
       font-weight: bold;
@@ -34,7 +66,7 @@ main {
         color: rgb(83, 83, 83);
       }
     }
-    @media screen and (max-width: 800px) {
+    @media screen and (max-width: 830px) {
       button {
         min-width: 50px;
       }
@@ -52,7 +84,10 @@ main {
         font-size: 16px;
       }
     }
-    @media screen and (max-width: 480px) {
+    @media screen and (max-width: 490px) {
+      &-title {
+        font-size: 16px;
+      }
       button {
         margin: 2px;
       }
@@ -76,6 +111,13 @@ main {
     justify-content: center;
     flex-direction: column;
     gap: 15px;
+    &-title {
+      font-size: 20px;
+      font-weight: bold;
+      @media screen and (max-width: 490px) {
+        font-size: 16px;
+      }
+    }
     &-text {
       display: flex;
       flex-direction: row;
@@ -100,9 +142,9 @@ main {
         button {
           padding: 0;
           font-weight: bold;
-          font-size: 10px;
+          font-size: 8px;
           width: 50px;
-          height: 20px;
+          height: 30px;
           border-radius: 5px;
           text-transform: uppercase;
 
@@ -172,8 +214,8 @@ main {
 
   @media screen and (max-width: 380px) {
     button {
-      width: 26px;
-      height: 26px;
+      width: 25px;
+      height: 25px;
     }
   }
 }
