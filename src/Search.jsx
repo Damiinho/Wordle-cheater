@@ -13,6 +13,7 @@ const Search = () => {
   } = useContext(AppContext);
   const [finalWords, setFinalWords] = useState([]);
   const [randomWord, setRandomWord] = useState([]);
+  const [reqRandomWord, setReqRandomWord] = useState(true);
   const [randomNumber, setRandomNumber] = useState(0);
   const [possibleWords, setPossibleWords] = useState([]);
   const textFieldsRef = useRef([]);
@@ -53,10 +54,28 @@ const Search = () => {
     fetchRandomWord();
   }, []);
 
+  useEffect(() => {
+    if (
+      activeLetters.every((item) => item.active === true) &&
+      particularActiveLetters[0].every((item) => item.active === true) &&
+      particularActiveLetters[1].every((item) => item.active === true) &&
+      particularActiveLetters[2].every((item) => item.active === true) &&
+      particularActiveLetters[3].every((item) => item.active === true) &&
+      particularActiveLetters[4].every((item) => item.active === true) &&
+      word[0] === "" &&
+      word[1] === "" &&
+      word[2] === "" &&
+      word[3] === "" &&
+      word[4] === ""
+    ) {
+      setReqRandomWord(true);
+    } else setReqRandomWord(false);
+  }, [activeLetters, particularActiveLetters, word]);
+
   const checkLettersInWords = () => {
     let wordsArray = [];
 
-    if (activeLetters.every((item) => item.active === true)) {
+    if (reqRandomWord) {
       wordsArray = [{ word: randomWord }];
       fetchRandomWord();
     } else {
@@ -617,7 +636,7 @@ const Search = () => {
           <p>{possibleWords[randomNumber].word}</p>
           <Button
             onClick={() => {
-              if (activeLetters.every((item) => item.active === true)) {
+              if (reqRandomWord) {
                 checkLettersInWords();
               } else {
                 setRandomNumber(
