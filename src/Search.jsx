@@ -2,6 +2,7 @@ import { Button, Popover, TextField } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "./contexts/AppContext";
 import CachedIcon from "@mui/icons-material/Cached";
+import loadingIMG from "./img/ZZ5H.gif";
 
 const Search = () => {
   const {
@@ -17,25 +18,78 @@ const Search = () => {
   const [randomNumber, setRandomNumber] = useState(0);
   const [possibleWords, setPossibleWords] = useState([]);
   const textFieldsRef = useRef([]);
-  const url = `https://api.datamuse.com/words?sp=${
-    word[0].length > 0 ? word[0] : "?"
-  }${word[1].length > 0 ? word[1] : "?"}${word[2].length > 0 ? word[2] : "?"}${
-    word[3].length > 0 ? word[3] : "?"
-  }${word[4].length > 0 ? word[4] : "?"}`;
+  const [waitForSearch, setWaitForSearch] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const result = await response.json();
-        setFinalWords(result);
-      } catch (error) {
-        console.error(error);
+      const alphabet = [
+        "q",
+        "w",
+        "e",
+        "r",
+        "t",
+        "y",
+        "u",
+        "i",
+        "o",
+        "p",
+        "a",
+        "s",
+        "d",
+        "f",
+        "g",
+        "h",
+        "j",
+        "k",
+        "l",
+        "z",
+        "x",
+        "c",
+        "v",
+        "b",
+        "n",
+        "m",
+      ];
+
+      let fullResult = [];
+      if (word[0].length > 0) {
+        const url = `https://api.datamuse.com/words?sp=${word[0]}${
+          word[1].length > 0 ? word[1] : "?"
+        }${word[2].length > 0 ? word[2] : "?"}${
+          word[3].length > 0 ? word[3] : "?"
+        }${word[4].length > 0 ? word[4] : "?"}`;
+
+        try {
+          const response = await fetch(url);
+          const result = await response.json();
+          fullResult = [...fullResult, ...result];
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        setWaitForSearch(true);
+        for (let i = 0; i < alphabet.length; i++) {
+          const url = `https://api.datamuse.com/words?sp=${alphabet[i]}${
+            word[1].length > 0 ? word[1] : "?"
+          }${word[2].length > 0 ? word[2] : "?"}${
+            word[3].length > 0 ? word[3] : "?"
+          }${word[4].length > 0 ? word[4] : "?"}&max=30`;
+
+          try {
+            const response = await fetch(url);
+            const result = await response.json();
+            fullResult = [...fullResult, ...result];
+          } catch (error) {
+            console.error(error);
+          }
+        }
       }
+      setWaitForSearch(false);
+      setFinalWords(fullResult);
     };
 
     fetchData();
-  }, [word, url]);
+  }, [word]);
 
   const fetchRandomWord = async () => {
     try {
@@ -81,19 +135,23 @@ const Search = () => {
     } else {
       finalWords.forEach((object) => {
         let allLettersIsCorrect = true;
+        if (object.word.length > 5) {
+          allLettersIsCorrect = false;
+          return null;
+        } else {
+          for (let i = 0; i < object.word.length; i++) {
+            let availableLetters = particularActiveLetters[i]
+              .filter((obj) => obj.active)
+              .map((obj) => obj.letter)
+              .filter((letter) =>
+                activeLetters.some((obj) => obj.active && obj.letter === letter)
+              );
 
-        for (let i = 0; i < object.word.length; i++) {
-          let availableLetters = particularActiveLetters[i]
-            .filter((obj) => obj.active)
-            .map((obj) => obj.letter)
-            .filter((letter) =>
-              activeLetters.some((obj) => obj.active && obj.letter === letter)
-            );
-
-          if (word[i] === "") {
-            if (!availableLetters.includes(object.word[i])) {
-              allLettersIsCorrect = false;
-              break;
+            if (word[i] === "") {
+              if (!availableLetters.includes(object.word[i])) {
+                allLettersIsCorrect = false;
+                break;
+              }
             }
           }
         }
@@ -103,6 +161,7 @@ const Search = () => {
         }
       });
     }
+    setRandomNumber(Math.floor(Math.random() * wordsArray.length));
 
     setPossibleWords(wordsArray);
   };
@@ -622,13 +681,19 @@ const Search = () => {
       <div className="search-button">
         <Button
           onClick={() => {
-            checkLettersInWords();
-            setRandomNumber(0);
+            if (!waitForSearch) {
+              setRandomNumber(0);
+              checkLettersInWords();
+            }
           }}
           variant="contained"
           size="large"
         >
-          Search
+          {waitForSearch ? (
+            <img style={{ maxWidth: 30 }} src={loadingIMG} alt="" />
+          ) : (
+            "Search"
+          )}
         </Button>
       </div>
       {possibleWords.length > 0 ? (
