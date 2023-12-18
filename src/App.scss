@@ -122,6 +122,11 @@ main {
     &-title {
       font-size: 20px;
       font-weight: bold;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
       @media screen and (max-width: 490px) {
         font-size: 16px;
       }

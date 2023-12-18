@@ -13,7 +13,9 @@ const Search = () => {
     setWord,
     particularActiveLetters,
     activeLetters,
+    setActiveLetters,
     setParticularActiveLetters,
+    windowWidth,
   } = useContext(AppContext);
   const [finalWords, setFinalWords] = useState([]);
   const [randomWord, setRandomWord] = useState([]);
@@ -335,10 +337,38 @@ const Search = () => {
       setKnownWOPlace(items);
     }
   };
+  const handleReset = () => {
+    setWord(["", "", "", "", ""]);
+    setKnownWOPlace([]);
+    const newActiveLetters = [...activeLetters];
+    newActiveLetters.map((item) => (item.active = true));
+    setActiveLetters(newActiveLetters);
+    const newParticularActiveLetters = [...particularActiveLetters];
+    newParticularActiveLetters.map((table) => {
+      table.map((letter) => (letter.active = true));
+    });
+    setParticularActiveLetters(newParticularActiveLetters);
+  };
 
   return (
     <div className="search">
-      <div className="search-title">Enter known letters</div>
+      <div className="search-title">
+        <span>Enter known letters</span>
+        <Button
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: windowWidth > 490 ? 13 : 11,
+          }}
+          onClick={handleReset}
+          variant="outlined"
+          color="error"
+          size="small"
+        >
+          reset
+        </Button>
+      </div>
       <div className="search-text">
         {word.map((letter, index) => {
           return (
@@ -782,7 +812,7 @@ const Search = () => {
         components={animatedComponents}
         options={options}
         isMulti
-        placeholder="Known letters without place"
+        placeholder="Pick known letters without place"
         value={knownWOPlace}
         onChange={(items) => handleSelect(items)}
       />
