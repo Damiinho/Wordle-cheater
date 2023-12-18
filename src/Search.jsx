@@ -4,6 +4,9 @@ import { AppContext } from "./contexts/AppContext";
 import CachedIcon from "@mui/icons-material/Cached";
 import loadingIMG from "./img/ZZ5H.gif";
 
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+
 const Search = () => {
   const {
     word,
@@ -19,6 +22,7 @@ const Search = () => {
   const [possibleWords, setPossibleWords] = useState([]);
   const textFieldsRef = useRef([]);
   const [waitForSearch, setWaitForSearch] = useState(false);
+  const [knownWOPlace, setKnownWOPlace] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,8 +132,7 @@ const Search = () => {
 
   const checkLettersInWords = () => {
     let wordsArray = [];
-
-    if (reqRandomWord) {
+    if (reqRandomWord && knownWOPlace.length === 0) {
       wordsArray = [{ word: randomWord }];
       fetchRandomWord();
     } else {
@@ -139,18 +142,26 @@ const Search = () => {
           allLettersIsCorrect = false;
           return null;
         } else {
-          for (let i = 0; i < object.word.length; i++) {
-            let availableLetters = particularActiveLetters[i]
-              .filter((obj) => obj.active)
-              .map((obj) => obj.letter)
-              .filter((letter) =>
-                activeLetters.some((obj) => obj.active && obj.letter === letter)
-              );
+          const knownValues = knownWOPlace.map((knownObj) => knownObj.value);
 
-            if (word[i] === "") {
-              if (!availableLetters.includes(object.word[i])) {
-                allLettersIsCorrect = false;
-                break;
+          if (!knownValues.every((value) => object.word.includes(value))) {
+            allLettersIsCorrect = false;
+          } else {
+            for (let i = 0; i < object.word.length; i++) {
+              let availableLetters = particularActiveLetters[i]
+                .filter((obj) => obj.active)
+                .map((obj) => obj.letter)
+                .filter((letter) =>
+                  activeLetters.some(
+                    (obj) => obj.active && obj.letter === letter
+                  )
+                );
+
+              if (word[i] === "") {
+                if (!availableLetters.includes(object.word[i])) {
+                  allLettersIsCorrect = false;
+                  break;
+                }
               }
             }
           }
@@ -235,6 +246,94 @@ const Search = () => {
       clickedLetter.active = !clickedLetter.active;
     }
     setParticularActiveLetters(newParticularActiveLetters);
+  };
+  const options = [
+    { value: "q", label: "q" },
+    { value: "w", label: "w" },
+    { value: "e", label: "e" },
+    { value: "r", label: "r" },
+    { value: "t", label: "t" },
+    { value: "y", label: "y" },
+    { value: "u", label: "u" },
+    { value: "i", label: "i" },
+    { value: "o", label: "o" },
+    { value: "p", label: "p" },
+    { value: "a", label: "a" },
+    { value: "s", label: "s" },
+    { value: "d", label: "d" },
+    { value: "f", label: "f" },
+    { value: "g", label: "g" },
+    { value: "h", label: "h" },
+    { value: "j", label: "j" },
+    { value: "k", label: "k" },
+    { value: "l", label: "l" },
+    { value: "z", label: "z" },
+    { value: "x", label: "x" },
+    { value: "c", label: "c" },
+    { value: "v", label: "v" },
+    { value: "b", label: "b" },
+    { value: "n", label: "n" },
+    { value: "m", label: "m" },
+  ];
+
+  const animatedComponents = makeAnimated();
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      backgroundColor: "#242424",
+      color: "white",
+      width: 295,
+    }),
+    option: (provided) => ({
+      ...provided,
+      backgroundColor: "#242424", // Kolor opcji
+      color: "white", // Kolor tekstu opcji
+      width: 30,
+      ":hover": {
+        backgroundColor: "#606060",
+        color: "white",
+        cursor: "pointer",
+      },
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: "#c2a65a", // Kolor tła dla wybranych opcji
+      display: "flex",
+      justifyContent: "space-between",
+      width: 35,
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: "white", // Kolor tekstu dla etykiety wybranej opcji
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: "white", // Kolor tekstu dla przycisku usuwania wybranej opcji
+      width: 20,
+      ":hover": {
+        backgroundColor: "#981315", // Kolor tła przycisku usuwania po najechaniu myszą
+      },
+    }),
+    input: (provided) => ({
+      ...provided,
+      color: "white", // Kolor tekstu dla pola wejściowego
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: "#242424", // Kolor tła dla menu rozwijanego
+    }),
+    menuList: (provided) => ({
+      ...provided,
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+    }),
+  };
+
+  const handleSelect = (items) => {
+    if (knownWOPlace.length < 5 || items.length < knownWOPlace.length) {
+      setKnownWOPlace(items);
+    }
   };
 
   return (
@@ -678,6 +777,15 @@ const Search = () => {
           );
         })}
       </div>
+      <Select
+        styles={customStyles}
+        components={animatedComponents}
+        options={options}
+        isMulti
+        placeholder="Known letters without place"
+        value={knownWOPlace}
+        onChange={(items) => handleSelect(items)}
+      />
       <div className="search-button">
         <Button
           onClick={() => {
