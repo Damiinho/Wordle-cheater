@@ -175,6 +175,7 @@ export const AppProvider = ({ children }) => {
     ],
   ]);
   const [word, setWord] = useState(["", "", "", "", ""]);
+  const [knownWOPlace, setKnownWOPlace] = useState([]);
 
   const providerValue = {
     windowWidth,
@@ -184,6 +185,8 @@ export const AppProvider = ({ children }) => {
     setWord,
     particularActiveLetters,
     setParticularActiveLetters,
+    knownWOPlace,
+    setKnownWOPlace,
   };
 
   useEffect(() => {

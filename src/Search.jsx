@@ -16,6 +16,8 @@ const Search = () => {
     setActiveLetters,
     setParticularActiveLetters,
     windowWidth,
+    knownWOPlace,
+    setKnownWOPlace,
   } = useContext(AppContext);
   const [finalWords, setFinalWords] = useState([]);
   const [randomWord, setRandomWord] = useState([]);
@@ -24,7 +26,6 @@ const Search = () => {
   const [possibleWords, setPossibleWords] = useState([]);
   const textFieldsRef = useRef([]);
   const [waitForSearch, setWaitForSearch] = useState(false);
-  const [knownWOPlace, setKnownWOPlace] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -335,6 +336,17 @@ const Search = () => {
   const handleSelect = (items) => {
     if (knownWOPlace.length < 5 || items.length < knownWOPlace.length) {
       setKnownWOPlace(items);
+      const newActiveLetters = activeLetters.map((letterObj) => {
+        const isKnownLetter = items.some(
+          (knownObj) => knownObj.value === letterObj.letter
+        );
+        return {
+          ...letterObj,
+          active: isKnownLetter ? true : letterObj.active,
+        };
+      });
+
+      setActiveLetters(newActiveLetters);
     }
   };
   const handleReset = () => {

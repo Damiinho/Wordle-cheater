@@ -3,18 +3,23 @@ import { AppContext } from "./contexts/AppContext";
 import { Button } from "@mui/material";
 
 const Letters = () => {
-  const { activeLetters, setActiveLetters, word } = useContext(AppContext);
+  const { activeLetters, setActiveLetters, word, knownWOPlace } =
+    useContext(AppContext);
 
   const handleClick = (letter) => {
     const newActiveLetters = [...activeLetters];
     const foundObject = newActiveLetters.find((item) => item.letter === letter);
+    const isKnownLetter = knownWOPlace.some(
+      (knownObj) => knownObj.value === letter
+    );
     if (
       !(
         letter === word[0] ||
         letter === word[1] ||
         letter === word[2] ||
         letter === word[3] ||
-        letter === word[4]
+        letter === word[4] ||
+        isKnownLetter
       )
     ) {
       foundObject.active = !foundObject.active;
